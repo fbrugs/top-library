@@ -1,0 +1,154 @@
+@font-face {
+	font-family: bebas;
+	src: url(font/bebas.woff2);
+}
+
+:root {
+	/* --main-color: rgb(75, 76, 114); */
+	--main-color: rgb(68, 69, 99);
+	/* --secondary-color: rgb(235, 163, 247); */
+	--secondary-color: rgb(243, 10, 173);
+	--header-inline-padding: 3rem;
+
+	--input-inline-padding: 1rem;
+
+	--form-container-width: 300px;
+	--form-container-height: 350px;
+
+	--border-style: solid;
+}
+
+*,
+*::before,
+*::after {
+	padding: 0;
+	margin: 0;
+	box-sizing: border-box;
+	font-family: bebas;
+}
+
+html {
+	min-height: 100vh;
+}
+
+body {
+	position: relative;
+	height: 100vh;
+	display: grid;
+	grid-template: 1fr 3fr / 1fr;
+}
+
+/* ////////////// */
+/* HEADER STYLING */
+/* ////////////// */
+
+header {
+	background-color: var(--main-color);
+	padding-inline: var(--header-inline-padding);
+
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+}
+
+header h1 {
+	color: white;
+	font-size: 10vh;
+}
+
+
+.btn {
+	border-style: none;
+	border-radius: 10px;
+	font-size: 1.5rem;
+	color: var(--main-color);
+	height: 3rem;
+	width: 10rem;
+}
+
+.btn:hover {
+	border: 3px var(--border-style) var(--secondary-color);
+	color: var(--secondary-color);
+	/* background-color: var(--main-color); */
+}
+
+/* //////////// */
+/* MAIN STYLING */
+/* //////////// */
+
+.book-form-container {
+	position: absolute;
+	top: calc(50vh - var(--form-container-height) / 2);
+	left: calc(50vw - var(--form-container-width) / 2);
+	height: var(--form-container-height);
+	width: var(--form-container-width);
+	background-color: var(--main-color);
+	border-radius: 1rem;
+}
+
+form {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	flex-direction: column;
+	gap: 0.5rem;
+	height: 100%;
+}
+
+form div {
+	display: flex;
+	gap: 4rem;
+	align-items: center;
+}
+
+form div div {
+	display: flex;
+	gap: 5px;
+}
+
+.submit-btn {
+	height: 3rem;
+	width: 6rem;
+}
+
+form label {
+	font-size: 2rem;
+	color: white;
+}
+
+form .input-text {
+	width: 80%;
+	height: 30px;
+	border-radius: 8px;
+	border-style: none;
+	outline: 2px solid var(--main-color);
+	padding-inline: var(--input-inline-padding);
+	font-size: 1.2rem;
+}
+
+.form-checkmark {
+	position: relative;
+	appearance: none;
+	height: 20px;
+	width: 20px;
+	border-radius: 0;
+	outline: none;
+	background-color: white;
+	transform: skew(-5deg, 6deg)
+}
+
+.form-checkmark:checked::before {
+	content: "\2713";
+	height: 20px;
+	width: 20px;
+	font-size: 3rem;
+	position: absolute;
+	top: -20px;
+	right: 8px;
+	color: var(--secondary-color);
+}
+
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+	-webkit-appearance: none;
+}
