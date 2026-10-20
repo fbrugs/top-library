@@ -4,18 +4,24 @@
 }
 
 :root {
-	/* --main-color: rgb(75, 76, 114); */
 	--main-color: rgb(68, 69, 99);
-	/* --secondary-color: rgb(235, 163, 247); */
 	--secondary-color: rgb(243, 10, 173);
-	--header-inline-padding: 3rem;
 
+	--header-inline-padding: 3rem;
 	--input-inline-padding: 1rem;
 
+	--form-border-width: 6px;
+	--form-color: var(--main-color);
+	--form-border-color: white;
 	--form-container-width: 300px;
 	--form-container-height: 350px;
+	--form-label-color: white;
+	--form-checkbox-color: white;
 
 	--border-style: solid;
+
+	--card-color: var(--main-color);
+	--card-border-color: rgb(48, 49, 73);
 }
 
 *,
@@ -35,14 +41,22 @@ body {
 	position: relative;
 	height: 100vh;
 	display: grid;
-	grid-template: 1fr 3fr / 1fr;
+	grid-template: minmax(150px, 1fr) 3fr / 1fr;
 }
+
+button:focus {
+	outline: none;
+}
+
 
 /* ////////////// */
 /* HEADER STYLING */
 /* ////////////// */
 
 header {
+	position: sticky;
+	top: 0;
+	border-bottom: 0.5rem solid white;
 	background-color: var(--main-color);
 	padding-inline: var(--header-inline-padding);
 
@@ -53,7 +67,7 @@ header {
 
 header h1 {
 	color: white;
-	font-size: 10vh;
+	font-size: clamp(70px, 10vh, 250px);
 }
 
 
@@ -67,23 +81,40 @@ header h1 {
 }
 
 .btn:hover {
-	border: 3px var(--border-style) var(--secondary-color);
+	outline: 3px var(--border-style) var(--secondary-color);
 	color: var(--secondary-color);
-	/* background-color: var(--main-color); */
 }
 
 /* //////////// */
-/* MAIN STYLING */
+/* FORM STYLING */
 /* //////////// */
 
 .book-form-container {
-	position: absolute;
-	top: calc(50vh - var(--form-container-height) / 2);
-	left: calc(50vw - var(--form-container-width) / 2);
+	position: fixed;
+	top: calc(50% - var(--form-container-height) / 2);
+	left: calc(50% - var(--form-container-width) / 2);
 	height: var(--form-container-height);
 	width: var(--form-container-width);
-	background-color: var(--main-color);
+	background-color: var(--form-color);
 	border-radius: 1rem;
+	border: var(--form-border-width) solid var(--form-border-color);
+}
+
+.book-form-container .close {
+	color: red;
+	position: absolute;
+	top: 8px;
+	left: 260px;
+	width: 20px;
+	height: 30px;
+	background-color: var(--main-color);
+	border-style: none;
+	font-size: 2.5rem;
+}
+
+.book-form-container .close:hover {
+	transition: ease-in-out 140ms;
+	color: darkred;
 }
 
 form {
@@ -97,8 +128,9 @@ form {
 
 form div {
 	display: flex;
-	gap: 4rem;
+	gap: 1.5rem;
 	align-items: center;
+	padding-top: 5px;
 }
 
 form div div {
@@ -113,7 +145,7 @@ form div div {
 
 form label {
 	font-size: 2rem;
-	color: white;
+	color: var(--form-label-color);
 }
 
 form .input-text {
@@ -133,9 +165,16 @@ form .input-text {
 	width: 20px;
 	border-radius: 0;
 	outline: none;
-	background-color: white;
+	background-color: var(--form-checkbox-color);
 	transform: skew(-5deg, 6deg)
 }
+
+/* WARNING: TEMP STYLE */
+.form-checkmark:hover,
+.form-checkmark:checked:hover { 
+	outline: 3px var(--border-style) var(--secondary-color);
+}
+/* WARNING: TEMP STYLE*/
 
 .form-checkmark:checked::before {
 	content: "\2713";
@@ -151,4 +190,36 @@ form .input-text {
 input::-webkit-outer-spin-button,
 input::-webkit-inner-spin-button {
 	-webkit-appearance: none;
+}
+
+/* //////////// */
+/* MAIN STYLING */
+/* //////////// */
+
+main {
+	padding: 1rem;
+	display: grid;
+	grid-template-columns: repeat(auto-fill, 250px);
+	grid-auto-rows: 250px;
+	gap: 1rem;
+	justify-content: center;
+
+	/* overflow: hidden; */
+}
+
+main .card {
+	background-color: var(--card-color);
+	border-radius: 1rem;
+	padding: 1rem;
+}
+
+main .card p {
+	font-size: 1.4rem;
+	text-align: center;
+	color: var(--secondary-color);
+}
+
+main .card h1 {
+	text-align: center;
+	color: whitesmoke;
 }
