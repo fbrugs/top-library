@@ -54,6 +54,7 @@ button:focus {
 /* ////////////// */
 
 header {
+	z-index: 1;
 	position: sticky;
 	top: 0;
 	border-bottom: 0.5rem solid white;
@@ -90,6 +91,7 @@ header h1 {
 /* //////////// */
 
 .book-form-container {
+	z-index: 1;
 	position: fixed;
 	top: calc(50% - var(--form-container-height) / 2);
 	left: calc(50% - var(--form-container-width) / 2);
@@ -169,12 +171,10 @@ form .input-text {
 	transform: skew(-5deg, 6deg)
 }
 
-/* WARNING: TEMP STYLE */
 .form-checkmark:hover,
 .form-checkmark:checked:hover { 
 	outline: 3px var(--border-style) var(--secondary-color);
 }
-/* WARNING: TEMP STYLE*/
 
 .form-checkmark:checked::before {
 	content: "\2713";
@@ -199,27 +199,82 @@ input::-webkit-inner-spin-button {
 main {
 	padding: 1rem;
 	display: grid;
-	grid-template-columns: repeat(auto-fill, 250px);
+	/* grid-template-columns: repeat(auto-fill, 250px); */ 
+	grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
 	grid-auto-rows: 250px;
 	gap: 1rem;
 	justify-content: center;
-
-	/* overflow: hidden; */
 }
 
 main .card {
 	background-color: var(--card-color);
 	border-radius: 1rem;
-	padding: 1rem;
+	border-left: 1rem solid var(--secondary-color);
+	padding: 0.6rem;
+
+	display: grid;
+	grid-template-columns: 1fr 1fr;
+}
+
+.del-btn {
+	position: absolute;
+	width: 35px;
+	height: 35px;
+	font-size: 2rem;
+	color: white;
+	background-color: var(--main-color);
+
+	outline: none;
+	border: none;
+}
+
+.del-btn:hover {
+	color: red;
+	cursor: pointer;
+}
+
+main .card div {
+	display: flex;
+	gap: 30px;
 }
 
 main .card p {
 	font-size: 1.4rem;
 	text-align: center;
 	color: var(--secondary-color);
+	grid-column: span 2
 }
 
 main .card h1 {
+	font-size: 1.5rem;
 	text-align: center;
 	color: whitesmoke;
+	grid-column: span 2
+}
+
+
+@media screen and (max-width: 545px) {
+
+	body {
+		min-height: 100dvh;
+		height: auto;
+		display: block;
+	}
+	
+	header h1 {
+		font-size: clamp(3rem, 6rem, 10vw);
+	}
+
+	header {
+		padding-inline: 1.3rem;
+		padding-block: 2rem;
+	}
+
+	main {
+		min-height: 100dvh;
+		display: grid;
+		grid-template-columns: 1fr;
+		grid-auto-rows: 250px;
+	}
+
 }

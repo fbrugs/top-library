@@ -5,26 +5,38 @@ const addButton = document.querySelector(".add-book-btn");
 const bookFormContainer = document.querySelector(".book-form-container");
 const bookForm = document.querySelector("#form")
 const submitBook = document.querySelector(".submit-btn");
-const inputs = document.querySelectorAll(".input-text");
 
-function addCard(obj) {
-	const main = document.querySelector('main');
-	const div = document.createElement('div');
+function addCard(obj, id) {
+	const main = document.querySelector("main");
+	const div = document.createElement("div");
+	const secDiv = document.createElement("div");
+	const button = document.createElement("button");
+
+	button.setAttribute("data-id", id);
+	button.setAttribute("onClick", `deleteMe("${id}")`);
+	button.classList.add("del-btn");
+	button.innerText = "\u2717";
 
 	for (item in obj) {
-
 		const header = document.createElement("p");
 		const value = document.createElement("h1");
 
-		header.innerText = item;
-		value.innerText = obj[item];
-		div.appendChild(header)
-		div.appendChild(value)
+		if (item !== "id") {
+			header.innerText = item + ':';
+			value.innerText = obj[item];
+			div.appendChild(header);
+			div.appendChild(value);
+		}
 
-		console.log(item + ':' + obj[item])
+		if (item === 'id') {
+			div.setAttribute("data-id", id);
+		}
 	}
 
+	div.appendChild(secDiv);
+	div.appendChild(button)
 	div.classList.add('card');
+
 	main.appendChild(div)
 }
 
@@ -33,10 +45,8 @@ function Book(title, author, pages, read, id) {
 	this.author = author,
 	this.pages = pages,
 	this.read = read,
-	this.id = id
+	this.id = id;
 }
-
-// bookFormContainer.style.visibility = "hidden"
 
 addButton.addEventListener("click", (e) => {
 	if (bookFormContainer.style.visibility === "hidden") {
@@ -49,7 +59,7 @@ addButton.addEventListener("click", (e) => {
 bookForm.addEventListener("submit", (e) => {
 	e.preventDefault()
 	bookFormContainer.style.visibility = "hidden";
-	
+
 	const formData = new FormData(bookForm);
 	const title = formData.get('title').toLowerCase();
 	const author = formData.get('author').toLowerCase();
@@ -59,22 +69,12 @@ bookForm.addEventListener("submit", (e) => {
 
 	const book = new Book(title, author, pages, read, id);
 	lib.push(book);
-	addCard(book)
+	addCard(book, id)
 	bookForm.reset()
 })
 
-const book1 = new Book('Jan gaat eten', 'Fabian Brugs', 96, false, crypto.randomUUID());
-const book2 = new Book('Ik hou van jou', 'Gioya Diels', 216, true, crypto.randomUUID());
-lib.push(book1);
-lib.push(book2);
+function deleteMe(id) {
+	const thisItem = document.querySelector(`[data-id="${id}"]`);
+	thisItem.remove();
+}
 
-
-addCard(lib[1]);
-// addCard(lib[1]);
-// addCard(lib[1]);
-// addCard(lib[1]);
-// addCard(lib[1]);
-// addCard(lib[1]);
-// addCard(lib[0]);
-// addCard(lib[0]);
-// addCard(lib[0]);
