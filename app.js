@@ -5,67 +5,59 @@ class Book {
 		this.author = author;
 		this.pages = pages;
 		this.read = read;
-		this.id = id ?? crypto.randomUUID(); 
+		this.id = id ?? crypto.randomUUID();
 	}
 
 	toggleRead() {
 		this.read = !this.read;
 	}
-
 }
 
-const libraryController = () => {
+class Library {
+	#lib = [];
 
-	const lib = [];
+	constructor() {
+		const savedLib = JSON.parse(localStorage.getItem("library")) || [];
 
-	const saveLibrary = () => {
-		localStorage.setItem("library", JSON.stringify(lib));
+		savedLib.forEach((b) => {
+			this.#lib.push(
+				new Book(b.title, b.author, b.pages, b.read, b.id)
+			);
+		});
 	}
 
-	const removeBook = (id) => {
-		const index = lib.findIndex(item => item.id === id);
+	saveLibrary() {
+		localStorage.setItem("library", JSON.stringify(this.#lib));
+	}
+
+	addBook(title, author, pages, read, id) {
+		this.#lib.push(new Book(title, author, pages, read, id));
+		this.saveLibrary();
+	}
+
+	removeBook(id) {
+		const index = this.#lib.findIndex(item => item.id === id);
 
 		if (index === -1) {
 			throw new Error("Cannot remove item, index not found");
 		}
 
-		lib.splice(index, 1);
-		saveLibrary();
+		this.#lib.splice(index, 1);
+		this.saveLibrary();
 	}
 
-	const addBook = (title, author, pages, read, id) => {
-		lib.push(new Book(title, author, pages, read, id));
-		saveLibrary();
+	getBook(id) {
+		return this.#lib.find(item => item.id === id);
 	}
 
-	const getBook = (id) => {
-		const index = lib.findIndex(item => item.id === id)
-		return lib[index]
+	getLibrary() {
+		return this.#lib;
 	}
-
-	const getLibrary = () => lib;
-
-	const savedLib = JSON.parse(localStorage.getItem("library")) || [];
-	
-	savedLib.forEach((b) => {
-		addBook(b.title, b.author, b.pages, b.read, b.id)
-	})
-
-	console.log(lib)
-
-	return {
-		removeBook,
-		addBook,
-		getLibrary,
-		getBook,
-		saveLibrary
-	}
-
 }
 
 const displayController = (() => {
 
-	const lib = libraryController();
+	const lib = new Library
 
 	function render() {
 		const main = document.querySelector("main");
