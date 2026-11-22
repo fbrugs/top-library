@@ -15,7 +15,12 @@ class Book {
 }
 
 const libraryController = () => {
-	const lib = [];
+
+	const saveLibrary = () => {
+		localStorage.setItem("library", JSON.stringify(lib));
+	}
+
+	const lib = JSON.parse(localStorage.getItem("library")) || [];
 
 	const removeBook = (id) => {
 		const index = lib.findIndex(item => item.id === id);
@@ -25,10 +30,12 @@ const libraryController = () => {
 		}
 
 		lib.splice(index, 1);
+		saveLibrary();
 	}
 
 	const addBook = (title, author, pages, read) => {
-		lib.push(new Book(title, author, pages, read))
+		lib.push(new Book(title, author, pages, read));
+		saveLibrary();
 	}
 
 	const getBook = (id) => {
@@ -107,18 +114,15 @@ const displayController = (() => {
 		const formData = new FormData(bookForm);
 		const title = formData.get('title').toLowerCase();
 		const author = formData.get('author').toLowerCase();
-		const pages = formData.get('pages').toLowerCase();
+		const pages = Number(formData.get('pages'));
 		const read = formData.get('read') ? true : false;
 
 		lib.addBook(title, author, pages, read);
 		bookForm.reset();
 		render();
-	})
+	});
 
-	return {
-		library: lib.getLibrary,
-		remove: lib.removeBook
-	}
+	render();
 
 })();
 
