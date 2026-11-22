@@ -1,11 +1,11 @@
 class Book {
 
-	constructor(title, author, pages, read) {
+	constructor(title, author, pages, read, id) {
 		this.title = title;
 		this.author = author;
 		this.pages = pages;
 		this.read = read;
-		this.id = crypto.randomUUID();
+		this.id = id ?? crypto.randomUUID(); 
 	}
 
 	toggleRead() {
@@ -16,11 +16,11 @@ class Book {
 
 const libraryController = () => {
 
+	const lib = [];
+
 	const saveLibrary = () => {
 		localStorage.setItem("library", JSON.stringify(lib));
 	}
-
-	const lib = JSON.parse(localStorage.getItem("library")) || [];
 
 	const removeBook = (id) => {
 		const index = lib.findIndex(item => item.id === id);
@@ -33,8 +33,8 @@ const libraryController = () => {
 		saveLibrary();
 	}
 
-	const addBook = (title, author, pages, read) => {
-		lib.push(new Book(title, author, pages, read));
+	const addBook = (title, author, pages, read, id) => {
+		lib.push(new Book(title, author, pages, read, id));
 		saveLibrary();
 	}
 
@@ -43,14 +43,22 @@ const libraryController = () => {
 		return lib[index]
 	}
 
-	const getLibrary = () => lib
+	const getLibrary = () => lib;
 
+	const savedLib = JSON.parse(localStorage.getItem("library")) || [];
+	
+	savedLib.forEach((b) => {
+		addBook(b.title, b.author, b.pages, b.read, b.id)
+	})
+
+	console.log(lib)
 
 	return {
 		removeBook,
 		addBook,
 		getLibrary,
-		getBook
+		getBook,
+		saveLibrary
 	}
 
 }
@@ -76,6 +84,22 @@ const displayController = (() => {
 					const title = document.createElement("p");
 					header.innerText = key;
 					title.innerText = value;
+
+					if (!obj.read && key === "read") {
+						const changeRead = document.createElement("button");
+						changeRead.innerText = "\u2713";
+						changeRead.classList.add("changeRead");
+
+						changeRead.addEventListener("click", () => {
+							obj.toggleRead();
+							changeRead.remove();
+							lib.saveLibrary();
+							render();
+						});
+
+						title.appendChild(changeRead)
+
+					}
 
 					cardDiv.appendChild(header);
 					cardDiv.appendChild(title);
@@ -125,6 +149,3 @@ const displayController = (() => {
 	render();
 
 })();
-
-
-// UNFINISHED: ADD TOGGLE SWITCH READ STATUS! WITHIN RENDER()
