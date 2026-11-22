@@ -1,116 +1,126 @@
-const lib = [];
+class Book {
 
-const main = document.querySelector("main");
+	constructor(title, author, pages, read) {
+		this.title = title;
+		this.author = author;
+		this.pages = pages;
+		this.read = read;
+		this.id = crypto.randomUUID();
+	}
 
-const addButton = document.querySelector(".add-book-btn");
+	toggleRead() {
+		this.read = !this.read;
+	}
 
-const bookFormContainer = document.querySelector(".book-form-container");
-const bookForm = document.querySelector("#form")
-const submitBook = document.querySelector(".submit-btn");
+}
 
-function addCard(obj, id) {
-	const div = document.createElement("div");
-	const button = document.createElement("button");
-	const changeRead = document.createElement("button");
+const libraryController = () => {
+	const lib = [];
 
-	changeRead.setAttribute("onClick", `change("${id}")`);
-	changeRead.innerText = "\u2713";
-	changeRead.classList.add("changeRead");
+	const removeBook = (id) => {
+		const index = lib.findIndex(item => item.id === id);
 
-	button.setAttribute("data-id", id);
-	button.setAttribute("onClick", `deleteMe("${id}")`);
-	button.classList.add("del-btn");
-	button.innerText = "\u2717";
+		if (index === -1) {
+			throw new Error("Cannot remove item, index not found");
+		}
 
-	for (item in obj) {
-		const header = document.createElement("p");
-		const value = document.createElement("h1");
+		lib.splice(index, 1);
+	}
 
-		if (Object.hasOwn(obj, item)) {
-			if (item !== "id") {
-				header.innerText = item + ':';
-				value.innerText = obj[item];
+	const addBook = (title, author, pages, read) => {
+		lib.push(new Book(title, author, pages, read))
+	}
 
-				div.appendChild(header);
-				div.appendChild(value);
+	const getBook = (id) => {
+		const index = lib.findIndex(item => item.id === id)
+		return lib[index]
+	}
+
+	const getLibrary = () => lib
+
+
+	return {
+		removeBook,
+		addBook,
+		getLibrary,
+		getBook
+	}
+
+}
+
+const displayController = (() => {
+
+	const lib = libraryController();
+
+	function render() {
+		const main = document.querySelector("main");
+		const library = lib.getLibrary();
+		main.innerHTML = "";
+
+		for (const obj of library) {
+
+			const cardDiv = document.createElement("div");
+			const removeButton = document.createElement("button");
+
+			for (const [key, value] of Object.entries(obj)) {
+
+				if (key !== 'id') {
+					const header = document.createElement("h1");
+					const title = document.createElement("p");
+					header.innerText = key;
+					title.innerText = value;
+
+					cardDiv.appendChild(header);
+					cardDiv.appendChild(title);
+				}
 			}
 
-			if (obj.read === false && item === "read") {
-				value.setAttribute("data-readstatus", "x");
-				value.appendChild(changeRead);
-			}
+			cardDiv.classList.add("card");
+			cardDiv.setAttribute('data-id', obj.id);
 
-			if (item === 'id') {
-				div.setAttribute("data-id", id);
-			}
+			removeButton.addEventListener("click", () => {
+				lib.removeBook(obj.id);
+				cardDiv.remove();
+			});
+
+			removeButton.classList.add("del-btn");
+			removeButton.innerText = "\u2717";
+
+			cardDiv.appendChild(removeButton);
+			main.appendChild(cardDiv);
 		}
 	}
 
-	div.appendChild(button)
-	div.classList.add('card');
+	const bookFormContainer = document.querySelector(".book-form-container");
+	const addButton = document.querySelector(".add-book-btn");
 
-	main.appendChild(div)
-}
+	addButton.addEventListener("click", (e) => {
+		bookFormContainer.style.visibility = bookFormContainer.style.visibility === "hidden" ? "visible" : "hidden"
+	})
 
-function Book(title, author, pages, read, id) {
-	this.title = title,
-		this.author = author,
-		this.pages = pages,
-		this.read = read,
-		this.id = id;
-}
+	const bookForm = document.querySelector("#form");
 
-Book.prototype.readed = function () {
-	this.read = true;
-}
-
-addButton.addEventListener("click", (e) => {
-	if (bookFormContainer.style.visibility === "hidden") {
-		bookFormContainer.style.visibility = "visible";
-	} else {
+	bookForm.addEventListener("submit", (e) => {
+		e.preventDefault();
 		bookFormContainer.style.visibility = "hidden";
-	}
-})
 
-bookForm.addEventListener("submit", (e) => {
-	e.preventDefault()
-	bookFormContainer.style.visibility = "hidden";
+		const formData = new FormData(bookForm);
+		const title = formData.get('title').toLowerCase();
+		const author = formData.get('author').toLowerCase();
+		const pages = formData.get('pages').toLowerCase();
+		const read = formData.get('read') ? true : false;
 
-	const formData = new FormData(bookForm);
-	const title = formData.get('title').toLowerCase();
-	const author = formData.get('author').toLowerCase();
-	const pages = formData.get('pages').toLowerCase();
-	const read = formData.get('read') ? true : false;
-	const id = crypto.randomUUID();
+		lib.addBook(title, author, pages, read);
+		bookForm.reset();
+		render();
+	})
 
-	const book = new Book(title, author, pages, read, id);
-	lib.push(book);
-	addCard(book, id)
-	bookForm.reset()
-})
-
-function deleteMe(id) {
-	const thisItem = document.querySelector(`[data-id="${id}"]`);
-	const index = lib.findIndex(item => item.id === id);
-
-	thisItem.remove();
-	
-	if (index !== -1) {
-		console.log(`DELETED ${lib[index].title} BY ${lib[index].author}`);
-		lib.splice(index, 1);
-	}
-}
-
-function change(id) {
-	const thisItem = document.querySelector(`[data-id="${id}"]`);
-	const x = thisItem.querySelector(`[data-readstatus="x"]`);
-	const index = lib.findIndex(item => item.id === id);
-
-	if (thisItem) {
-		x.innerText = true;
+	return {
+		library: lib.getLibrary,
+		remove: lib.removeBook
 	}
 
-	if (index !== -1) {
-		lib[index].readed();
-	}
-}
+})();
+
+
+// UNFINISHED: ADD TOGGLE SWITCH READ STATUS! WITHIN RENDER()

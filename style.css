@@ -114,11 +114,6 @@ header h1 {
 	font-size: 2.5rem;
 }
 
-.book-form-container .close:hover {
-	transition: ease-in-out 140ms;
-	color: darkred;
-}
-
 form {
 	display: flex;
 	justify-content: center;
@@ -213,7 +208,7 @@ main .card {
 	padding: 0.6rem;
 
 	display: grid;
-	grid-template-columns: 1fr 1fr;
+	grid-template-columns: 1fr;
 }
 
 .del-btn {
@@ -241,14 +236,14 @@ main .card div {
 main .card p {
 	font-size: 1.4rem;
 	text-align: center;
-	color: var(--secondary-color);
+	color: whitesmoke;
 	grid-column: span 2
 }
 
 main .card h1 {
 	font-size: 1.5rem;
 	text-align: center;
-	color: whitesmoke;
+	color: var(--secondary-color);
 	grid-column: span 2
 }
 
@@ -256,7 +251,7 @@ main .card h1 {
 	background-color: transparent;
 	outline: none;
 	border: none;
-	color: var(--secondary-color);
+	color: green;
 	font-size: 1.8rem;
 	cursor: pointer;
 }
